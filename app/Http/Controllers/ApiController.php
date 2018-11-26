@@ -72,9 +72,9 @@ class ApiController extends Controller {
                         ->first();
                 $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
                 if ($checkAvailablity) {
-                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"]);
+                    return parent::success("" . $getProfile->name . " is available at " . $time . ", go ahead with booking?", $update["responseId"]);
                 } else {
-                    return parent::error("Sorry " . $getProfile->name . " is not available at " . $neededTime . ".", $update["responseId"]);
+                    return parent::error("Sorry " . $getProfile->name . " is not available at " . $time . ".", $update["responseId"]);
                 }
             } else {
                 return parent::error("Sorry Profile " . $servicePerson . " is not found.", $update["responseId"]);
