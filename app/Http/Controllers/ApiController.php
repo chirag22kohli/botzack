@@ -39,8 +39,13 @@ class ApiController extends Controller {
             return parent::error('Date and Time are required both!', $update["responseId"]);
         endif;
         $date = date("Y-m-d", strtotime($date));
+        $timeArray = explode('+', $time);
+
+        $time = $timeArray[0];
+
         $time = date("g:i:s", strtotime($time));
         $neededTime = date("g:i A", strtotime($time));
+
         //dd($time);
         if ($servicePerson == '' || $servicePerson == null) {
             //check on first come first serve
@@ -64,17 +69,18 @@ class ApiController extends Controller {
 
             //Check only for service person
             $profile = profile::where('name', $servicePerson)->where('user_id', $user_id)->first();
+
             if ($profile) {
 
                 $checkAvailablity = availability::where('profile_id', $profile->id)->where('start_date', '<=', $date)->where('end_date', '>=', $date)->
                         where('start_time', '<=', $time)
                         ->where('end_time', '>=', $time)
                         ->first();
-                $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                if ($checkAvailablity) {
-                    return parent::success("" . $getProfile->name . " is available at " . $time . ", go ahead with booking?", $update["responseId"]);
+           if ($checkAvailablity) {
+                    $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"]);
                 } else {
-                    return parent::error("Sorry " . $getProfile->name . " is not available at " . $time . ".", $update["responseId"]);
+                    return parent::error("Sorry " . $servicePerson . " is not available at " . $neededTime . ".", $update["responseId"]);
                 }
             } else {
                 return parent::error("Sorry Profile " . $servicePerson . " is not found.", $update["responseId"]);
