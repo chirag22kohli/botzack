@@ -43,9 +43,9 @@ class ApiController extends Controller {
 
         $time = $timeArray[0];
 
-        $time = date("g:i:s", strtotime($time));
+        
         $neededTime = date("g:i A", strtotime($time));
-
+        $time = date("g:i:s", strtotime($time));
         //dd($time);
         if ($servicePerson == '' || $servicePerson == null) {
             //check on first come first serve
