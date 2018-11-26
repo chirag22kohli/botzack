@@ -18,7 +18,7 @@ class Controller extends BaseController {
         $header = $request->header('account');
         if ($header) {
             $checkUser = User::where('id', $header)->first();
-            
+
             if ($checkUser):
                 return true;
             else:
@@ -29,7 +29,7 @@ class Controller extends BaseController {
         }
     }
 
-    public static function success($message, $responseId) {
+    public static function success($message, $responseId,$session) {
         $data = array(
             "source" => $responseId,
             "fulfillmentText" => $message,
@@ -43,11 +43,17 @@ class Controller extends BaseController {
                     )
                 ],
             ),
+            "outputContexts" => [[
+            "name" => $session,
+            "lifespanCount" => 5,
+                "parameters"=>[
+                    "date"=>'27-11-2018'
+                ]
+                ]],
         );
 
 
-         return response()->json($data, "200");
-        
+        return response()->json($data, "200");
     }
 
     public static function error($message, $responseId) {
@@ -65,8 +71,8 @@ class Controller extends BaseController {
                 ],
             ),
         );
-        
-        
+
+
         return response()->json($data, "200");
     }
 
