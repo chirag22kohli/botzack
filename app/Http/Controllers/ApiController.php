@@ -45,8 +45,8 @@ class ApiController extends Controller {
 
         
         $neededTime = date("g:i A", strtotime($time));
-        $time = date("g:i:s", strtotime($time));
-        //dd($time);
+        $time = date("G:i:s", strtotime($time));
+       //dd($time);
         if ($servicePerson == '' || $servicePerson == null) {
             //check on first come first serve
             $getAllProfiles = profile::where('user_id', $user_id)->get();
