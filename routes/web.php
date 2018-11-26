@@ -45,4 +45,4 @@ Route::resource('admin/bookings', 'Admin\\bookingsController');
 
 
 //Api Models
- Route::post('checkAvailablity', 'ApiController@checkAvailablity');
+ Route::post('mainApi', 'ApiController@mainApi');

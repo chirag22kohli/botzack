@@ -10,13 +10,25 @@ use Illuminate\Http\Request;
 
 class ApiController extends Controller {
 
-    public function checkAvailablity(Request $request) {
+    public function mainApi(Request $request) {
         $update = $request->json()->all();
         if(parent::getMainAccount($request)) {  
-            return parent::success("Success IN",$update["responseId"]);
+            $action =  $update['queryResult']['action'];
+           
+            if($action == 'checkAvailability'){
+              return  self::checkAvailability($update);
+            }else{
+                 return  parent::error('Sorry! Wrong Action!',$update["responseId"]);
+            }
+            
+            
         }else{
           return  parent::error('Please check headers!',$update["responseId"]);
         }
+    }
+    
+    public static function checkAvailability($update){
+        return parent::success("Success IN", $update["responseId"]);
     }
 
 }
