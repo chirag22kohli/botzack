@@ -29,8 +29,8 @@ class Controller extends BaseController {
         }
     }
 
-    public static function success($message, $responseId, $session, $customContext = "") {
-        $sessionCustom  = explode('contexts/',$session);
+    public static function success($message, $responseId, $session, $customContext = "", $contextArray = []) {
+        $sessionCustom = explode('contexts/', $session);
         $data = array(
             "source" => $responseId,
             "fulfillmentText" => $message,
@@ -52,22 +52,19 @@ class Controller extends BaseController {
             ]
                 ],
                 [
-                    "name" =>$customContext ,
+                    "name" => $customContext,
                     "lifespanCount" => 1,
-                    "parameters" => [
-                        "profileId" => '1'
-                    ]
+                    "parameters" => $contextArray
                 ]
-                ],
+            ],
         );
 
 
         return response()->json($data, "200");
     }
-    
-    
-      public static function successWithoutContext($message, $responseId) {
-     
+
+    public static function successWithoutContext($message, $responseId) {
+
         $data = array(
             "source" => $responseId,
             "fulfillmentText" => $message,
@@ -81,13 +78,11 @@ class Controller extends BaseController {
                     )
                 ],
             ),
-          
         );
 
 
         return response()->json($data, "200");
     }
-
 
     public static function error($message, $responseId) {
         $data = array(
