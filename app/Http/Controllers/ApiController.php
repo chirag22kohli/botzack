@@ -57,6 +57,8 @@ class ApiController extends Controller {
         $time = date("G:i:s", strtotime($time));
         //dd($time);
         if ($servicePerson == '' || $servicePerson == null) {
+            $context = 'salooncheck-availability-specificperson-followup';
+            return parent::success("Do you have a specific service person in mind?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
             //check on first come first serve
             $getAllProfiles = profile::where('user_id', $user_id)->get();
             if (count($getAllProfiles) > 0):
@@ -130,7 +132,7 @@ class ApiController extends Controller {
 //        });
         //print_r($update['queryResult']["outputContexts"]);
         $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
-       
+
 
         $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
         $customerName = $update['queryResult']["parameters"]['customerName'];
