@@ -21,6 +21,8 @@ class ApiController extends Controller {
 
             if ($action == 'checkAvailability') {
                 return self::checkAvailability($update, $request);
+            }elseif($action == 'confirmBooking'){
+                 return self::confirmBooking($update, $request);
             } else {
                 return parent::error('Sorry! Wrong Action!', $update["responseId"]);
             }
@@ -88,6 +90,16 @@ class ApiController extends Controller {
         }
 
         return parent::success("Success IN", $update["responseId"],$update['queryResult']["outputContexts"][0]['name']);
+    }
+    
+    
+    
+    public static function confirmBooking($update, $request){
+        $user_id = $request->header('account');
+
+        $date = $update['queryResult']['parameters']['date'];
+        $time = $update['queryResult']['parameters']['time'];
+        $servicePerson = $update['queryResult']['parameters']['servicePerson'];
     }
 
 }

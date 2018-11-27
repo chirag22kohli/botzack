@@ -51,13 +51,14 @@ class Controller extends BaseController {
                 "dateCustom" => '27-11-2018'
             ]
                 ],
-                [
-                    "name" => $sessionCustom[0]."contexts/salooncheck-availability-followup-noperson" ,
-                    "lifespanCount" => 5,
-                    "parameters" => [
-                        "dateCustom" => '27-11-2018'
-                    ]
-                ]],
+//                [
+//                    "name" => $sessionCustom[0]."contexts/salooncheck-availability-followup-noperson" ,
+//                    "lifespanCount" => 5,
+//                    "parameters" => [
+//                        "dateCustom" => '27-11-2018'
+//                    ]
+//                ]
+                ],
         );
 
 
