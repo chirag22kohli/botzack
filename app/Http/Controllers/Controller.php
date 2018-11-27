@@ -29,7 +29,8 @@ class Controller extends BaseController {
         }
     }
 
-    public static function success($message, $responseId,$session) {
+    public static function success($message, $responseId, $session) {
+        $sessionCustom  = explode('contexts/',$session);
         $data = array(
             "source" => $responseId,
             "fulfillmentText" => $message,
@@ -46,9 +47,16 @@ class Controller extends BaseController {
             "outputContexts" => [[
             "name" => $session,
             "lifespanCount" => 5,
-                "parameters"=>[
-                    "dateCustom"=>'27-11-2018'
-                ]
+            "parameters" => [
+                "dateCustom" => '27-11-2018'
+            ]
+                ],
+                [
+                    "name" => $sessionCustom[0]."contexts/salooncheck-availability-followup-noperson" ,
+                    "lifespanCount" => 5,
+                    "parameters" => [
+                        "dateCustom" => '27-11-2018'
+                    ]
                 ]],
         );
 
