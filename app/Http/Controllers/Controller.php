@@ -46,14 +46,14 @@ class Controller extends BaseController {
             ),
             "outputContexts" => [[
             "name" => $session,
-            "lifespanCount" => 5,
+            "lifespanCount" => 1,
             "parameters" => [
                 "dateCustom" => '27-11-2018'
             ]
                 ],
                 [
                     "name" =>$customContext ,
-                    "lifespanCount" => 5,
+                    "lifespanCount" => 1,
                     "parameters" => [
                         "profileId" => '1'
                     ]
