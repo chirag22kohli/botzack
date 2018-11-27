@@ -34,7 +34,8 @@ class ApiController extends Controller {
 
     public static function checkAvailability($update, $request) {
         $user_id = $request->header('account');
-        $contextBase = explode('context/', $update['queryResult']["outputContexts"][0]['name']);
+        $contextBase = explode('contexts/', $update['queryResult']["outputContexts"][0]['name']);
+        
         $contextBase = $contextBase[0] . "context/";
         $date = $update['queryResult']['parameters']['date'];
         $time = $update['queryResult']['parameters']['time'];
