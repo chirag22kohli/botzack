@@ -18,8 +18,12 @@ class ApiController extends Controller {
     public function mainApi(Request $request) {
         $update = $request->json()->all();
         if (parent::getMainAccount($request)) {
+            
+            if(!isset($update['queryResult']['action'])){
+                return parent::error('Please check headers!', $update["responseId"]);
+            }
             $action = $update['queryResult']['action'];
-
+            
             if ($action == 'checkAvailability') {
                 return self::checkAvailability($update, $request);
             } elseif ($action == 'confirmBooking') {
