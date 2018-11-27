@@ -28,6 +28,8 @@ class ApiController extends Controller {
                 return self::checkAvailability($update, $request);
             } elseif ($action == 'confirmBooking') {
                 return self::confirmBooking($update, $request);
+            } elseif ($action == 'checkRandomPerson') {
+                return self::checkRandomPerson($update, $request);
             } else {
                 return parent::error('Sorry! Wrong Action!', $update["responseId"]);
             }
@@ -66,31 +68,6 @@ class ApiController extends Controller {
         if ($servicePerson == '' || $servicePerson == null) {
             $context = 'salooncheck-availability-specificperson-followup';
             return parent::success("Do you have a specific service person in mind?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
-            //check on first come first serve
-            $getAllProfiles = profile::where('user_id', $user_id)->get();
-            if (count($getAllProfiles) > 0):
-                foreach ($getAllProfiles as $profile) {
-                    $checkAvailablity = availability::where('profile_id', $profile->id)->where('start_date', '<=', $date)->where('end_date', '>=', $date)->
-                            where('start_time', '<=', $time)
-                            ->where('end_time', '>=', $time)
-                            ->first();
-                    if ($checkAvailablity) {
-                        $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-
-                        $context = 'salooncheck-availability-followup-confirmation';
-                        $contextArray = ['profile_id' => $checkAvailablity->profile_id];
-                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
-                    } else {
-                        $context = 'salooncheck-availability-followup-noperson';
-
-                        $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                        return parent::success("" . $getProfile->name . " is not available, would you like any other person to book?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
-                    }
-                }
-                return parent::error('No Available Profiles Found', $update["responseId"]);
-            else:
-                return parent::error('No Profiles found for this account!', $update["responseId"]);
-            endif;
         } else {
 
             //Check only for service person
@@ -160,6 +137,56 @@ class ApiController extends Controller {
                 return parent::error("Sorry, there was some issue in creating a booking for you. Please try again!", $update["responseId"]);
             }
         }
+    }
+
+    public static function checkRandomPerson($update, $request) {
+        $user_id = $request->header('account');
+
+        $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup");
+
+        $contextBase = explode('contexts/', $update['queryResult']["outputContexts"][$key]['name']);
+
+
+        $contextBase = $contextBase[0] . "contexts/";
+        $date = $update['queryResult']['outputContexts'][$key]['parameters']['date'];
+        $time = $update['queryResult']['outputContexts'][$key]['parameters']['time'];
+
+        $servicePerson = $update['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
+        if ($date == '' || $time == ''):
+            return parent::error('Date and Time are required both!', $update["responseId"]);
+        endif;
+        $date = date("Y-m-d", strtotime($date));
+        $timeArray = explode('+', $time);
+        $time = $timeArray[0];
+        $neededTime = date("g:i A", strtotime($time));
+        $time = date("G:i:s", strtotime($time));
+        
+        
+        //check on first come first serve
+        $getAllProfiles = profile::where('user_id', $user_id)->get();
+        if (count($getAllProfiles) > 0):
+            foreach ($getAllProfiles as $profile) {
+                $checkAvailablity = availability::where('profile_id', $profile->id)->where('start_date', '<=', $date)->where('end_date', '>=', $date)->
+                        where('start_time', '<=', $time)
+                        ->where('end_time', '>=', $time)
+                        ->first();
+                if ($checkAvailablity) {
+                    $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
+
+                    $context = 'salooncheck-availability-followup-confirmation';
+                    $contextArray = ['profile_id' => $checkAvailablity->profile_id];
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
+                } else {
+                    $context = 'salooncheck-availability-followup-noperson';
+
+                    $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
+                    return parent::success("" . $getProfile->name . " is not available, would you like any other person to book?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
+                }
+            }
+            return parent::error('No Available Profiles Found', $update["responseId"]);
+        else:
+            return parent::error('No Profiles found for this account!', $update["responseId"]);
+        endif;
     }
 
 }
