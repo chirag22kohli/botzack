@@ -58,7 +58,7 @@ class ApiController extends Controller {
                             ->first();
                     if ($checkAvailablity) {
                         $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update["session"]);
+                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update["outputContexts"]['name']);
                     }
                 }
                 return parent::error('No Available Profiles Found', $update["responseId"]);
@@ -78,7 +78,7 @@ class ApiController extends Controller {
                         ->first();
            if ($checkAvailablity) {
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update["session"]);
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update["outputContexts"]['name']);
                 } else {
                     return parent::error("Sorry " . $servicePerson . " is not available at " . $neededTime . ".", $update["responseId"]);
                 }
@@ -87,7 +87,7 @@ class ApiController extends Controller {
             }
         }
 
-        return parent::success("Success IN", $update["responseId"],$update["session"]);
+        return parent::success("Success IN", $update["responseId"],$update["outputContexts"]['name']);
     }
 
 }
