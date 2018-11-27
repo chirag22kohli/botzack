@@ -120,6 +120,10 @@ class ApiController extends Controller {
 
         $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
         $customerName = $update['queryResult']["parameters"]['customerName'];
+        if ($servicePerson == '') {
+            $keyNew = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
+            $servicePerson = $update['queryResult']["outputContexts"][$keyNew]['parameters']['servicePerson'];
+        }
         if ($date == '' || $time == '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
         } else {
@@ -160,8 +164,8 @@ class ApiController extends Controller {
         $time = $timeArray[0];
         $neededTime = date("g:i A", strtotime($time));
         $time = date("G:i:s", strtotime($time));
-        
-        
+
+
         //check on first come first serve
         $getAllProfiles = profile::where('user_id', $user_id)->get();
         if (count($getAllProfiles) > 0):
@@ -174,8 +178,8 @@ class ApiController extends Controller {
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
 
                     $context = 'salooncheck-availability-followup-confirmation';
-                    $contextArray = ['profile_id' => $checkAvailablity->profile_id,'servicePerson'=>$getProfile->name];
-                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'],$contextBase.$context, $contextArray);
+                    $contextArray = ['profile_id' => $checkAvailablity->profile_id, 'servicePerson' => $getProfile->name];
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
                 } else {
                     $context = 'salooncheck-availability-followup-noperson';
 
