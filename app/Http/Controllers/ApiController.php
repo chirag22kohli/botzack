@@ -111,6 +111,7 @@ class ApiController extends Controller {
         $date = $update['queryResult']["outputContexts"][0]['parameters']['date'];
         $time = $update['queryResult']["outputContexts"][0]['parameters']['time'];
         $servicePerson = $update['queryResult']["outputContexts"][0]['parameters']['servicePerson'];
+         $profile_id = $update['queryResult']["outputContexts"][0]['parameters']['profile_id'];
         $customerName = $update['queryResult']["parameters"]['customerName'];
         if ($date == '' || $time == '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
@@ -119,7 +120,8 @@ class ApiController extends Controller {
                         'date' => $date,
                         'time' => $time,
                         'user_id' => $user_id,
-                        'customer_name' => $customerName
+                        'customer_name' => $customerName,
+                        'profile_id'=>$profile_id
             ]);
 
             if ($createBooking) {
