@@ -18,12 +18,12 @@ class ApiController extends Controller {
     public function mainApi(Request $request) {
         $update = $request->json()->all();
         if (parent::getMainAccount($request)) {
-            
-            if(!isset($update['queryResult']['action'])){
+
+            if (!isset($update['queryResult']['action'])) {
                 return parent::error('Please check headers!', $update["responseId"]);
             }
             $action = $update['queryResult']['action'];
-            
+
             if ($action == 'checkAvailability') {
                 return self::checkAvailability($update, $request);
             } elseif ($action == 'confirmBooking') {
@@ -39,7 +39,7 @@ class ApiController extends Controller {
     public static function checkAvailability($update, $request) {
         $user_id = $request->header('account');
         $contextBase = explode('contexts/', $update['queryResult']["outputContexts"][0]['name']);
-        
+
         $contextBase = $contextBase[0] . "contexts/";
         $date = $update['queryResult']['parameters']['date'];
         $time = $update['queryResult']['parameters']['time'];
@@ -69,8 +69,8 @@ class ApiController extends Controller {
                         $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
 
                         $context = 'salooncheck-availability-followup-confirmation';
-
-                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context,$contextArray);
+                        $contextArray = ['profile_id' => $checkAvailablity->profile_id];
+                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
                     } else {
                         $context = 'salooncheck-availability-followup-noperson';
 
@@ -95,11 +95,11 @@ class ApiController extends Controller {
                         ->first();
                 if ($checkAvailablity) {
                     $context = 'salooncheck-availability-followup-confirmation';
-                    $contextArray =['profile_id'=>$checkAvailablity->profile_id];
+                    $contextArray = ['profile_id' => $checkAvailablity->profile_id];
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
                     return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
                 } else {
-                     $context = 'salooncheck-availability-followup-noperson';
+                    $context = 'salooncheck-availability-followup-noperson';
                     return parent::success("Sorry " . $servicePerson . " is not available at " . $neededTime . ".", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
                 }
             } else {
@@ -110,12 +110,29 @@ class ApiController extends Controller {
         return parent::success("Success IN", $update["responseId"], $update['queryResult']["outputContexts"][0]['name']);
     }
 
+    public static function findOutputContext($contexts, $field, $value) {
+        foreach ($contexts as $key => $contexts) {
+
+            if (strpos($contexts[$field], $value) !== false) {
+                return $key;
+            }
+        }
+        return false;
+    }
+
     public static function confirmBooking($update, $request) {
         $user_id = $request->header('account');
         $date = $update['queryResult']["outputContexts"][0]['parameters']['date'];
         $time = $update['queryResult']["outputContexts"][0]['parameters']['time'];
         $servicePerson = $update['queryResult']["outputContexts"][0]['parameters']['servicePerson'];
-         $profile_id = $update['queryResult']["outputContexts"][0]['parameters']['profile_id'];
+//        $results = array_filter($update['queryResult']["outputContexts"], function($value) {
+//            return strpos($value, 'salooncheck-availability-followup-confirmation') !== false;
+//        });
+        //print_r($update['queryResult']["outputContexts"]);
+        $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
+       
+
+        $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
         $customerName = $update['queryResult']["parameters"]['customerName'];
         if ($date == '' || $time == '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
@@ -125,7 +142,7 @@ class ApiController extends Controller {
                         'time' => $time,
                         'user_id' => $user_id,
                         'customer_name' => $customerName,
-                        'profile_id'=>$profile_id
+                        'profile_id' => $profile_id
             ]);
 
             if ($createBooking) {
