@@ -30,6 +30,9 @@ class Controller extends BaseController {
     }
 
     public static function success($message, $responseId, $session, $customContext = "", $contextArray = []) {
+        if(empty($contextArray)):
+            $contextArray = (object)[];
+        endif;
         $sessionCustom = explode('contexts/', $session);
         $data = array(
             "source" => $responseId,
