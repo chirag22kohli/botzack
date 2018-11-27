@@ -38,7 +38,7 @@ class ApiController extends Controller {
 
     public static function checkAvailability($update, $request) {
         $user_id = $request->header('account');
-        
+
         $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup");
 
         $contextBase = explode('contexts/', $update['queryResult']["outputContexts"][$key]['name']);
@@ -47,7 +47,10 @@ class ApiController extends Controller {
         $contextBase = $contextBase[0] . "contexts/";
         $date = $update['queryResult']['outputContexts'][$key]['parameters']['date'];
         $time = $update['queryResult']['outputContexts'][$key]['parameters']['time'];
-        $servicePerson = ['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
+
+        $servicePerson = $update['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
+
+
         if ($date == '' || $time == ''):
             return parent::error('Date and Time are required both!', $update["responseId"]);
         endif;
