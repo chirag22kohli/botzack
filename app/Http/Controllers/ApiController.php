@@ -11,6 +11,7 @@ use App\User;
 use App\profile;
 use App\availability;
 use Carbon\Carbon;
+use App\booking;
 
 class ApiController extends Controller {
 
@@ -21,8 +22,8 @@ class ApiController extends Controller {
 
             if ($action == 'checkAvailability') {
                 return self::checkAvailability($update, $request);
-            }elseif($action == 'confirmBooking'){
-                 return self::confirmBooking($update, $request);
+            } elseif ($action == 'confirmBooking') {
+                return self::confirmBooking($update, $request);
             } else {
                 return parent::error('Sorry! Wrong Action!', $update["responseId"]);
             }
@@ -45,10 +46,10 @@ class ApiController extends Controller {
 
         $time = $timeArray[0];
 
-        
+
         $neededTime = date("g:i A", strtotime($time));
         $time = date("G:i:s", strtotime($time));
-       //dd($time);
+        //dd($time);
         if ($servicePerson == '' || $servicePerson == null) {
             //check on first come first serve
             $getAllProfiles = profile::where('user_id', $user_id)->get();
@@ -60,7 +61,7 @@ class ApiController extends Controller {
                             ->first();
                     if ($checkAvailablity) {
                         $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update['queryResult']["outputContexts"][0]['name']);
+                        return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name']);
                     }
                 }
                 return parent::error('No Available Profiles Found', $update["responseId"]);
@@ -78,9 +79,9 @@ class ApiController extends Controller {
                         where('start_time', '<=', $time)
                         ->where('end_time', '>=', $time)
                         ->first();
-           if ($checkAvailablity) {
+                if ($checkAvailablity) {
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"],$update['queryResult']["outputContexts"][0]['name']);
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name']);
                 } else {
                     return parent::error("Sorry " . $servicePerson . " is not available at " . $neededTime . ".", $update["responseId"]);
                 }
@@ -89,17 +90,31 @@ class ApiController extends Controller {
             }
         }
 
-        return parent::success("Success IN", $update["responseId"],$update['queryResult']["outputContexts"][0]['name']);
+        return parent::success("Success IN", $update["responseId"], $update['queryResult']["outputContexts"][0]['name']);
     }
-    
-    
-    
-    public static function confirmBooking($update, $request){
-        $user_id = $request->header('account');
 
-        $date = $update['queryResult']['parameters']['date'];
-        $time = $update['queryResult']['parameters']['time'];
-        $servicePerson = $update['queryResult']['parameters']['servicePerson'];
+    public static function confirmBooking($update, $request) {
+        $user_id = $request->header('account');
+        $date = $update['queryResult']["outputContexts"][0]['parameters']['date'];
+        $time = $update['queryResult']["outputContexts"][0]['parameters']['time'];
+        $servicePerson = $update['queryResult']["outputContexts"][0]['parameters']['servicePerson'];
+        $customerName = $update['queryResult']["parameters"]['customerName'];
+        if ($date == '' || $time == '' || $servicePerson == '') {
+            return parent::error("All the params are required", $update["responseId"]);
+        } else {
+            $createBooking = booking::create([
+                        'date' => $date,
+                        'time' => $time,
+                        'user_id' => $user_id,
+                        'customer_name' => $customerName
+            ]);
+
+            if ($createBooking) {
+                return parent::successWithoutContext("Your Booking is Confirmed!", $update["responseId"]);
+            } else {
+                return parent::error("Sorry, there was some issue in creating a booking for you. Please try again!", $update["responseId"]);
+            }
+        }
     }
 
 }

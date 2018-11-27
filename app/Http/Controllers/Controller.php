@@ -64,6 +64,30 @@ class Controller extends BaseController {
 
         return response()->json($data, "200");
     }
+    
+    
+      public static function successWithoutContext($message, $responseId) {
+     
+        $data = array(
+            "source" => $responseId,
+            "fulfillmentText" => $message,
+            "payload" => array(
+                "items" => [
+                    array(
+                        "simpleResponse" =>
+                        array(
+                            "textToSpeech" => "Success"
+                        )
+                    )
+                ],
+            ),
+          
+        );
+
+
+        return response()->json($data, "200");
+    }
+
 
     public static function error($message, $responseId) {
         $data = array(
