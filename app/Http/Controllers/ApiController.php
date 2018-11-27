@@ -175,7 +175,7 @@ class ApiController extends Controller {
 
                     $context = 'salooncheck-availability-followup-confirmation';
                     $contextArray = ['profile_id' => $checkAvailablity->profile_id,'servicePerson'=>$getProfile->name];
-                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'],$update['queryResult']["outputContexts"][$key]['name'], $contextArray);
+                    return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'],$contextBase.$context, $contextArray);
                 } else {
                     $context = 'salooncheck-availability-followup-noperson';
 
