@@ -47,7 +47,7 @@ class Controller extends BaseController {
             "name" => $session,
             "lifespanCount" => 5,
                 "parameters"=>[
-                    "date"=>'27-11-2018'
+                    "dateCustom"=>'27-11-2018'
                 ]
                 ]],
         );
