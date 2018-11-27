@@ -36,7 +36,7 @@ class ApiController extends Controller {
         $user_id = $request->header('account');
         $contextBase = explode('contexts/', $update['queryResult']["outputContexts"][0]['name']);
         
-        $contextBase = $contextBase[0] . "context/";
+        $contextBase = $contextBase[0] . "contexts/";
         $date = $update['queryResult']['parameters']['date'];
         $time = $update['queryResult']['parameters']['time'];
         $servicePerson = $update['queryResult']['parameters']['servicePerson'];
