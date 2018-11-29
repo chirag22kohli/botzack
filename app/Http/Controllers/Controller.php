@@ -30,8 +30,8 @@ class Controller extends BaseController {
     }
 
     public static function success($message, $responseId, $session, $customContext = "", $contextArray = []) {
-        if(empty($contextArray)):
-            $contextArray = (object)[];
+        if (empty($contextArray)):
+            $contextArray = (object) [];
         endif;
         $sessionCustom = explode('contexts/', $session);
         $data = array(
@@ -50,9 +50,7 @@ class Controller extends BaseController {
             "outputContexts" => [[
             "name" => $session,
             "lifespanCount" => 1,
-            "parameters" => [
-                "dateCustom" => '27-11-2018'
-            ]
+            "parameters" => $contextArray
                 ],
                 [
                     "name" => $customContext,

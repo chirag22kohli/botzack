@@ -116,25 +116,24 @@ class ApiController extends Controller {
     }
 
     public static function confirmBooking($update, $request) {
+
+        $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup");
+       
         $user_id = $request->header('account');
-        $date = $update['queryResult']["outputContexts"][0]['parameters']['date'];
-        $time = $update['queryResult']["outputContexts"][0]['parameters']['time'];
-        $servicePerson = $update['queryResult']["outputContexts"][0]['parameters']['servicePerson'];
+        $date = $update['queryResult']["outputContexts"][$key]['parameters']['date'];
+        $time = $update['queryResult']["outputContexts"][$key]['parameters']['time'];
+        $servicePerson = $update['queryResult']["outputContexts"][$key]['parameters']['servicePerson'];
 //        $results = array_filter($update['queryResult']["outputContexts"], function($value) {
 //            return strpos($value, 'salooncheck-availability-followup-confirmation') !== false;
 //        });
         //print_r($update['queryResult']["outputContexts"]);
-        $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
-        if (!$key) {
-            $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-customername");
-        }
 
+
+        
         $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
-        $customerName = $update['queryResult']["parameters"]['customerName'];
-        if ($servicePerson == '') {
-            $keyNew = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
-            $servicePerson = $update['queryResult']["outputContexts"][$keyNew]['parameters']['servicePerson'];
-        }
+        $customerName = $update['queryResult']["parameters"][$key]['parameters']['customerName'];
+
+      
         if ($date == '' || $time == '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
         } else {
