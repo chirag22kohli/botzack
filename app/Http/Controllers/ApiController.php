@@ -83,7 +83,7 @@ class ApiController extends Controller {
 
 
                     if ($customerName != '' || $customerName != null) {
-                        $context = 'salooncheck-availabilityconfirmbooking-yes-followup';
+                        $context = 'alooncheck-availability-followup-customername';
                         $contextArray = ['profile_id' => $checkAvailablity->profile_id, 'customerName' =>$customerName];
                     } else {
                         $context = 'salooncheck-availability-followup-confirmation';
