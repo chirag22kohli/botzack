@@ -118,22 +118,27 @@ class ApiController extends Controller {
     public static function confirmBooking($update, $request) {
 
         $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup");
-       
+
         $user_id = $request->header('account');
+
         $date = $update['queryResult']["outputContexts"][$key]['parameters']['date'];
+
         $time = $update['queryResult']["outputContexts"][$key]['parameters']['time'];
+
         $servicePerson = $update['queryResult']["outputContexts"][$key]['parameters']['servicePerson'];
+
+
 //        $results = array_filter($update['queryResult']["outputContexts"], function($value) {
 //            return strpos($value, 'salooncheck-availability-followup-confirmation') !== false;
 //        });
         //print_r($update['queryResult']["outputContexts"]);
 
 
-        
-        $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
-        $customerName = $update['queryResult']["parameters"][$key]['parameters']['customerName'];
 
-      
+        $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
+
+        $customerName = $update['queryResult']["outputContexts"][$key]['parameters']['customerName'];
+
         if ($date == '' || $time == '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
         } else {
