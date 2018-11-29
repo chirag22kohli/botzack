@@ -51,7 +51,7 @@ class ApiController extends Controller {
         $time = $update['queryResult']['outputContexts'][$key]['parameters']['time'];
 
         $servicePerson = $update['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
-
+        $customerName = $update['queryResult']['outputContexts'][$key]['parameters']['customerName'];
 
         if ($date == '' || $time == ''):
             return parent::error('Date and Time are required both!', $update["responseId"]);
@@ -80,7 +80,14 @@ class ApiController extends Controller {
                         ->where('end_time', '>=', $time)
                         ->first();
                 if ($checkAvailablity) {
-                    $context = 'salooncheck-availability-followup-confirmation';
+
+
+                    if ($customerName != '' || $customerName != null) {
+                        $context = 'salooncheck-availabilityconfirmbooking-yes-followup';
+                    } else {
+                        $context = 'salooncheck-availability-followup-confirmation';
+                    }
+
                     $contextArray = ['profile_id' => $checkAvailablity->profile_id];
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
                     return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
