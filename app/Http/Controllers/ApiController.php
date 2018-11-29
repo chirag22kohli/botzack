@@ -195,11 +195,6 @@ class ApiController extends Controller {
                     $context = 'salooncheck-availability-followup-confirmation';
                     $contextArray = ['profile_id' => $checkAvailablity->profile_id, 'servicePerson' => $getProfile->name];
                     return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
-                } else {
-                    $context = 'salooncheck-availability-followup-noperson';
-
-                    $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
-                    return parent::success("" . $getProfile->name . " is not available, would you like any other person to book?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
                 }
             }
             return parent::error('No Available Profiles Found', $update["responseId"]);
