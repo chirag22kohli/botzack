@@ -84,13 +84,13 @@ class ApiController extends Controller {
 
                     if ($customerName != '' || $customerName != null) {
                         $context = 'salooncheck-availability-followup-customername';
-                        $contextArray = ['profile_id' => $checkAvailablity->profile_id, 'customerName' =>$customerName];
+                        $contextArray = ['profile_id' => $checkAvailablity->profile_id, 'customerName' => $customerName];
                     } else {
                         $context = 'salooncheck-availability-followup-confirmation';
                         $contextArray = ['profile_id' => $checkAvailablity->profile_id];
                     }
 
-                    
+
                     $getProfile = profile::where('id', $checkAvailablity->profile_id)->first();
                     return parent::success("" . $getProfile->name . " is available at " . $neededTime . ", go ahead with booking?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context, $contextArray);
                 } else {
@@ -125,7 +125,9 @@ class ApiController extends Controller {
 //        });
         //print_r($update['queryResult']["outputContexts"]);
         $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-confirmation");
-
+        if (!$key) {
+            $key = self::findOutputContext($update['queryResult']["outputContexts"], "name", "salooncheck-availability-followup-customername");
+        }
 
         $profile_id = $update['queryResult']["outputContexts"][$key]['parameters']['profile_id'];
         $customerName = $update['queryResult']["parameters"]['customerName'];
