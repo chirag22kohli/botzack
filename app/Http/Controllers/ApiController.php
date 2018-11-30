@@ -56,7 +56,10 @@ class ApiController extends Controller {
         $serviceTypes = $update['queryResult']['outputContexts'][$key]['parameters']['serviceTypes'];
         if ($serviceTypes != '' && $serviceTypes != null) {
             $serviceTypeId = self::getServiceTypeId($serviceTypes);
-        } 
+        } else {
+            $context = 'salooncheck-availability-followup-specificservicetype';
+            return parent::success("Do you need any specific service type?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
+        }
         if ($date == '' || $time == ''):
             return parent::error('Date and Time are required both!', $update["responseId"]);
         endif;
