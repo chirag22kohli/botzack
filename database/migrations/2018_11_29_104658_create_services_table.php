@@ -12,7 +12,7 @@ class CreateServicesTable extends Migration
      */
     public function up()
     {
-        Schema::update('services', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->softDeletes();
