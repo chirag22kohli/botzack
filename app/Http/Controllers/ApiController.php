@@ -13,6 +13,7 @@ use App\availability;
 use Carbon\Carbon;
 use App\booking;
 use App\Service;
+
 class ApiController extends Controller {
 
     public function mainApi(Request $request) {
@@ -53,8 +54,11 @@ class ApiController extends Controller {
         $servicePerson = $update['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
         $customerName = $update['queryResult']['outputContexts'][$key]['parameters']['customerName'];
         $serviceTypes = $update['queryResult']['outputContexts'][$key]['parameters']['serviceTypes'];
-        if($serviceTypes != '' && $serviceTypes != null){
+        if ($serviceTypes != '' && $serviceTypes != null) {
             $serviceTypeId = self::getServiceTypeId($serviceTypes);
+        } else {
+            $context = 'salooncheck-availability-followup-specificservicetype';
+            return parent::success("Do you need any specific service ?", $update["responseId"], $update['queryResult']["outputContexts"][0]['name'], $contextBase . $context);
         }
         if ($date == '' || $time == ''):
             return parent::error('Date and Time are required both!', $update["responseId"]);
@@ -83,7 +87,7 @@ class ApiController extends Controller {
                         ->where('end_time', '>=', $time)
                         ->first();
                 if ($checkAvailablity) {
-                    
+
 
                     if ($customerName != '' || $customerName != null) {
                         $context = 'salooncheck-availability-followup-customername';
@@ -108,7 +112,6 @@ class ApiController extends Controller {
         return parent::success("Success IN", $update["responseId"], $update['queryResult']["outputContexts"][0]['name']);
     }
 
-    
     public static function findOutputContext($contexts, $field, $value) {
         foreach ($contexts as $key => $contexts) {
 
@@ -143,7 +146,8 @@ class ApiController extends Controller {
 
         $customerName = $update['queryResult']["outputContexts"][$key]['parameters']['customerName'];
 
-        if ($date == '' || $time == '' || $servicePerson == '') {
+        if ($date == '' || $time == ''
+                . '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
         } else {
             $createBooking = booking::create([
@@ -176,9 +180,8 @@ class ApiController extends Controller {
 
         $servicePerson = $update['queryResult']['outputContexts'][$key]['parameters']['servicePerson'];
 
-      //  $serviceTypes = $update['queryResult']['outputContexts'][$key]['parameters']['serviceTypes'];
-
-      //  dd($serviceTypes);
+        //  $serviceTypes = $update['queryResult']['outputContexts'][$key]['parameters']['serviceTypes'];
+        //  dd($serviceTypes);
 
 
         if ($date == '' || $time == ''):
@@ -213,12 +216,13 @@ class ApiController extends Controller {
         endif;
     }
 
-    public static function getServiceTypeId($serviceTypes){
-        $serviceTypeDetails  = Service::where('synonyms', 'like', '%' .$serviceTypes . '%')->first();
-        if($serviceTypeDetails){
+    public static function getServiceTypeId($serviceTypes) {
+        $serviceTypeDetails = Service::where('synonyms', 'like', '%' . $serviceTypes . '%')->first();
+        if ($serviceTypeDetails) {
             return $serviceTypeDetails->id;
-        }else{
-             return 0;
+        } else {
+            return 0;
         }
-     }
+    }
+
 }
