@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\profile;
+use App\Service;
 use Illuminate\Http\Request;
 
-class profilesController extends Controller {
+class ServicesController extends Controller {
 
     /**
      * Display a listing of the resource.
@@ -19,14 +19,14 @@ class profilesController extends Controller {
         $perPage = 25;
 
         if (!empty($keyword)) {
-            $profiles = profile::where('name', 'LIKE', "%$keyword%")
+            $services = Service::where('name', 'LIKE', "%$keyword%")
                             ->orWhere('user_id', 'LIKE', "%$keyword%")
                             ->latest()->paginate($perPage);
         } else {
-            $profiles = profile::latest()->paginate($perPage);
+            $services = Service::latest()->paginate($perPage);
         }
 
-        return view('admin.profiles.index', compact('profiles'));
+        return view('admin.services.index', compact('services'));
     }
 
     /**
@@ -35,7 +35,7 @@ class profilesController extends Controller {
      * @return \Illuminate\View\View
      */
     public function create() {
-        return view('admin.profiles.create');
+        return view('admin.services.create');
     }
 
     /**
@@ -48,20 +48,21 @@ class profilesController extends Controller {
     public function store(Request $request) {
 
         $requestData = $request->all();
-        profile::create($requestData);
+
+        Service::create($requestData);
+
 
         $dataArray = [];
-        $getAllProfiles = profile::get();
-        foreach ($getAllProfiles as $profile) {
-            $dataArray['entries'][]['value'] = $profile->name;
+        $getAllServices = Service::get();
+        foreach ($getAllServices as $service) {
+            $dataArray['entries'][]['value'] = $service->name;
         }
-        $entityName = "servicePerson";
+        $entityName = "serviceTypes";
 
 
         parent::uploadEntityData($dataArray, $entityName);
 
-
-        return redirect('admin/profiles')->with('flash_message', 'profile added!');
+        return redirect('admin/services')->with('flash_message', 'Service added!');
     }
 
     /**
@@ -72,9 +73,9 @@ class profilesController extends Controller {
      * @return \Illuminate\View\View
      */
     public function show($id) {
-        $profile = profile::findOrFail($id);
+        $service = Service::findOrFail($id);
 
-        return view('admin.profiles.show', compact('profile'));
+        return view('admin.services.show', compact('service'));
     }
 
     /**
@@ -85,9 +86,9 @@ class profilesController extends Controller {
      * @return \Illuminate\View\View
      */
     public function edit($id) {
-        $profile = profile::findOrFail($id);
+        $service = Service::findOrFail($id);
 
-        return view('admin.profiles.edit', compact('profile'));
+        return view('admin.services.edit', compact('service'));
     }
 
     /**
@@ -102,10 +103,10 @@ class profilesController extends Controller {
 
         $requestData = $request->all();
 
-        $profile = profile::findOrFail($id);
-        $profile->update($requestData);
+        $service = Service::findOrFail($id);
+        $service->update($requestData);
 
-        return redirect('admin/profiles')->with('flash_message', 'profile updated!');
+        return redirect('admin/services')->with('flash_message', 'Service updated!');
     }
 
     /**
@@ -116,9 +117,9 @@ class profilesController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id) {
-        profile::destroy($id);
+        Service::destroy($id);
 
-        return redirect('admin/profiles')->with('flash_message', 'profile deleted!');
+        return redirect('admin/services')->with('flash_message', 'Service deleted!');
     }
 
 }

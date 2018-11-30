@@ -46,3 +46,6 @@ Route::resource('admin/bookings', 'Admin\\bookingsController');
 
 //Api Models
  Route::post('mainApi', 'ApiController@mainApi');
+
+Route::resource('admin/services', 'Admin\\ServicesController');
+Route::resource('admin/profile-services', 'Admin\\ProfileServicesController');
