@@ -31,12 +31,31 @@ class ApiController extends Controller {
                 return self::confirmBooking($update, $request);
             } elseif ($action == 'checkRandomPerson') {
                 return self::checkRandomPerson($update, $request);
+            } elseif ($action == 'confirmBookingDemo') {
+                return self::confirmBookingDemo($update, $request);
             } else {
                 return parent::error('Sorry! Wrong Action!', $update["responseId"]);
             }
         } else {
             return parent::error('Please check headers!', $update["responseId"]);
         }
+    }
+
+    public static function confirmBookingDemo($update, $request) {
+        $user_id = $request->header('account');
+        $date = $update['queryResult']['parameters']['date'];
+        $time = $update['queryResult']['parameters']['time'];
+        $nameOfDay = date('l, F jS ', strtotime($date));
+        $timeArray = explode('+', $time);
+
+        $time = $timeArray[0];
+
+        $neededTime = date("g:i A", strtotime($time));
+        $message = ' Got it. I have your appointment scheduled on ' . $nameOfDay . ' at ' . $neededTime . '. See you soon. Good-bye. 
+';
+        
+
+        return parent::successWithoutContext($message, $update["responseId"]);
     }
 
     public static function checkAvailability($update, $request) {
