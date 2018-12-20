@@ -28,7 +28,7 @@ class booking extends Model {
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'profile_id', 'customer_name', 'date', 'time'];
+    protected $fillable = ['user_id', 'profile_id', 'customer_name', 'date', 'time','time_converted','date_converted'];
 
     /**
      * Change activity log event description

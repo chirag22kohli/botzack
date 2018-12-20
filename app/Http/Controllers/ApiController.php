@@ -53,7 +53,7 @@ class ApiController extends Controller {
         $neededTime = date("g:i A", strtotime($time));
         $message = ' Got it. I have your appointment scheduled on ' . $nameOfDay . ' at ' . $neededTime . '. See you soon. Good-bye. 
 ';
-        
+
 
         return parent::successWithoutContext($message, $update["responseId"]);
     }
@@ -169,10 +169,23 @@ class ApiController extends Controller {
                 . '' || $servicePerson == '') {
             return parent::error("All the params are required", $update["responseId"]);
         } else {
+
+            $date_converted = date("Y-m-d", strtotime($date));
+            $timeArray = explode('+', $time);
+
+            $time_converted = $timeArray[0];
+
+
+            $neededTime = date("g:i A", strtotime($time_converted));
+          //  $time_converted = date("G:i:s", strtotime($time));
+            
+            
             $createBooking = booking::create([
                         'date' => $date,
                         'time' => $time,
                         'user_id' => $user_id,
+                        'date_converted' => $date_converted,
+                        'time_converted' =>$neededTime,
                         'customer_name' => $customerName,
                         'profile_id' => $profile_id
             ]);

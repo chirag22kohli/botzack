@@ -81,7 +81,7 @@
     {
 
     title : '{{ $task->customer_name }}',
-            start : '{{ gmdate("Y-m-d H:i:s e", strtotime("$task->date $task->time "))}}',
+            start : '{{ gmdate("Y-m-d H:i:s", strtotime("$task->date_converted $task->time_converted "))}}',
             allDay: false,
     },
             @endforeach
