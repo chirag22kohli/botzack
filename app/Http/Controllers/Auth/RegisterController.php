@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use DB;
+use App\Role;
 
 class RegisterController extends Controller {
     /*
@@ -60,14 +62,21 @@ use RegistersUsers;
      * @return \App\User
      */
     protected function create(array $data) {
-          $request = request();
+        $request = request();
         $imagePath = $this->uploadFile($request, 'logo', '/logo');
-        return User::create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'password' => Hash::make($data['password']),
-                    'logo'=>$imagePath
+        
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'logo' => $imagePath
         ]);
+        $lastId = DB::getPdo()->lastInsertId();
+        $selectClientRole = Role::where('name', 'apiUser')->first();
+        $assignRole = DB::table('role_user')->insert(
+                ['user_id' => $lastId, 'role_id' => $selectClientRole->id]
+        );
+        return $user;
     }
 
 }
