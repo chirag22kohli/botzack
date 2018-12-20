@@ -9,11 +9,13 @@
             <div class="card">
                 <div class="card-header">Bookings</div>
                 <div class="card-body">
-                    <a href="{{ url('/admin/bookings/create') }}" class="btn btn-success btn-sm" title="Add New booking">
+                    <!--<a href="{{ url('/admin/bookings/create') }}" class="btn btn-success btn-sm" title="Add New booking">
                         <i class="fa fa-plus" aria-hidden="true"></i> Add New
-                    </a>
-                    <div id = "calendar"></div>
-                     <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
+                    </a> -->
+                    <div class = "row">
+                        <div id = "calendar"></div>
+                    </div>
+                    </br>
                     {!! Form::open(['method' => 'GET', 'url' => '/admin/bookings', 'class' => 'form-inline my-2 my-lg-0 float-right', 'role' => 'search'])  !!}
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}">
@@ -40,8 +42,8 @@
                                     <td>{{ $loop->iteration or $item->id }}</td>
                                     <td>{{ $item->bookedProfile->name }}</td>
                                     <td>{{ $item->customer_name }}</td>
-                                    <td>{{ $item->time }}</td>
-                                    <td>{{ $item->date }}</td>
+                                    <td>{{ $item->time_converted }}</td>
+                                    <td>{{ $item->date_converted }}</td>
                                     <td>
                                         <a href="{{ url('/admin/bookings/' . $item->id) }}" title="View booking"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
                                         <a href="{{ url('/admin/bookings/' . $item->id . '/edit') }}" title="Edit booking"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
@@ -70,7 +72,25 @@
         </div>
     </div>
 </div>
-
+<div class="modal" id="fullCalModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+        </div>
+        <div class="modal-body" id = "modalBody">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 <script>
     $(document).ready(function() {
     // page is now ready, initialize the calendar...
@@ -81,28 +101,21 @@
     {
 
     title : '{{ $task->customer_name }}',
+    description : '<h2>Booking Details</h2><p> Booked Profile: <b>{{ $task->bookedProfile->name}}</b></p><p>Date: <b>{{ $task->date_converted }}</b></p><p>Time: <b>{{$task->time_converted}}</b></p><p>Customer Name: <b>{{ $task->customer_name }}</b></p><p>Services: <b>{{ $task->service_type }}</b></p>',
             start : '{{ gmdate("Y-m-d H:i:s", strtotime("$task->date_converted $task->time_converted "))}}',
             allDay: false,
     },
             @endforeach
     ],
-            eventMouseover: function(calEvent, jsEvent) {
-    var tooltip = '<div class="tooltipevent" style="width:100px;height:100px;background:#ccc;position:absolute;z-index:10001;">' + calEvent.title + '</div>';
-    $("body").append(tooltip);
-    $(this).mouseover(function(e) {
-        $(this).css('z-index', 10000);
-        $('.tooltipevent').fadeIn('500');
-        $('.tooltipevent').fadeTo('10', 1.9);
-    }).mousemove(function(e) {
-        $('.tooltipevent').css('top', e.pageY + 10);
-        $('.tooltipevent').css('left', e.pageX + 20);
-    });
-},
-
-eventMouseout: function(calEvent, jsEvent) {
-     $(this).css('z-index', 8);
-     $('.tooltipevent').remove();
-},
+    eventColor: '#5bc0de',
+            eventRender: function(event, element) {
+            $(element).tooltip({title: event.title});
+            },
+            eventClick: function(event){
+            $('#modalTitle').html(event.title);
+            $('#modalBody').html(event.description);
+            $('#fullCalModal').modal();
+            },
     })
     });
 </script>

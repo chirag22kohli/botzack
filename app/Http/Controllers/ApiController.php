@@ -152,7 +152,7 @@ class ApiController extends Controller {
         $time = $update['queryResult']["outputContexts"][$key]['parameters']['time'];
 
         $servicePerson = $update['queryResult']["outputContexts"][$key]['parameters']['servicePerson'];
-
+        $serviceTypes =  $update['queryResult']["outputContexts"][$key]['parameters']['serviceTypes.original'];
 
 //        $results = array_filter($update['queryResult']["outputContexts"], function($value) {
 //            return strpos($value, 'salooncheck-availability-followup-confirmation') !== false;
@@ -187,7 +187,8 @@ class ApiController extends Controller {
                         'date_converted' => $date_converted,
                         'time_converted' =>$neededTime,
                         'customer_name' => $customerName,
-                        'profile_id' => $profile_id
+                        'profile_id' => $profile_id,
+                        'service_type'=>$serviceTypes
             ]);
 
             if ($createBooking) {

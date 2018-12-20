@@ -15,14 +15,24 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css' />
+
     </head>
     <body>
         <div id="app">
             <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
+                        @guest
                         {{ config('app.name', 'Laravel') }}
+                        @else
+                        <?php
+                        $owners = \App\User::where('id', Auth::id())->first();
+
+                        echo '<img  style = "width:10%" src = "' . url($owners->logo) . '">'
+                        ?>  
+                        @endguest
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -30,9 +40,11 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
-                        <ul class="navbar-nav mr-auto">
+                        <!--<ul class="navbar-nav mr-auto">
                             <li><a href="{{ url('/admin') }}">Dashboard <span class="sr-only">(current)</span></a></li>
-                        </ul>
+                         
+                         
+                        </ul> -->
 
                         <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ml-auto">
@@ -80,7 +92,7 @@
             <hr/>
 
             <div class="container">
-                &copy; {{ date('Y') }}. Created by <a href="http://www.appzcoder.com">AppzCoder</a>
+                &copy; {{ date('Y') }}. Created by <a href="https://www.netscapelabs.com">NetScape Labs</a>
                 <br/>
             </div>
 
@@ -103,7 +115,13 @@ tinymce.init({
 
         @yield('scripts')
     </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+    
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js'></script>
+
 </html>
