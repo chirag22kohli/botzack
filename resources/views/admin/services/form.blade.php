@@ -1,16 +1,12 @@
 <div class="form-group{{ $errors->has('name') ? 'has-error' : ''}}">
     {!! Form::label('name', 'Name', ['class' => 'control-label']) !!}
-    {!! Form::text('name', null, ('' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! Form::text('name', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
     {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
 </div>
-<div class="form-group{{ $errors->has('user_id') ? 'has-error' : ''}}">
-    {!! Form::label('user_id', 'User Id', ['class' => 'control-label']) !!}
-    {!! Form::text('user_id', null, ('' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
-    {!! $errors->first('user_id', '<p class="help-block">:message</p>') !!}
-</div>
+
 <div class="form-group{{ $errors->has('synonyms') ? 'has-error' : ''}}">
-    {!! Form::label('synonyms', 'synonyms', ['class' => 'control-label']) !!}
-    {!! Form::text('synonyms', null, ('' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! Form::label('synonyms', 'Synonyms', ['class' => 'control-label']) !!}
+    {!! Form::text('synonyms', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
     {!! $errors->first('synonyms', '<p class="help-block">:message</p>') !!}
 </div>
 

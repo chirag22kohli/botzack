@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\profile;
 use Illuminate\Http\Request;
+use Auth;
 
 class profilesController extends Controller {
 
@@ -20,10 +21,11 @@ class profilesController extends Controller {
 
         if (!empty($keyword)) {
             $profiles = profile::where('name', 'LIKE', "%$keyword%")
+                            ->where('user_id', Auth::id())
                             ->orWhere('user_id', 'LIKE', "%$keyword%")
                             ->latest()->paginate($perPage);
         } else {
-            $profiles = profile::latest()->paginate($perPage);
+            $profiles = profile::latest()->where('user_id', Auth::id())->paginate($perPage);
         }
 
         return view('admin.profiles.index', compact('profiles'));
@@ -48,6 +50,7 @@ class profilesController extends Controller {
     public function store(Request $request) {
 
         $requestData = $request->all();
+        $requestData['user_id'] = Auth::id();
         profile::create($requestData);
 
         $dataArray = [];
@@ -101,7 +104,7 @@ class profilesController extends Controller {
     public function update(Request $request, $id) {
 
         $requestData = $request->all();
-
+        $requestData['user_id'] = Auth::id();
         $profile = profile::findOrFail($id);
         $profile->update($requestData);
 

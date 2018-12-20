@@ -4,33 +4,33 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use App\booking;
 use Illuminate\Http\Request;
+use Auth;
+class bookingsController extends Controller {
 
-class bookingsController extends Controller
-{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $keyword = $request->get('search');
         $perPage = 25;
 
         if (!empty($keyword)) {
             $bookings = booking::where('user_id', 'LIKE', "%$keyword%")
-                ->orWhere('profile_id', 'LIKE', "%$keyword%")
-                ->orWhere('customer_name', 'LIKE', "%$keyword%")
-                ->orWhere('date', 'LIKE', "%$keyword%")
-                ->orWhere('time', 'LIKE', "%$keyword%")
-                ->latest()->paginate($perPage);
+                            ->orWhere('profile_id', 'LIKE', "%$keyword%")
+                            ->with('bookedProfile')
+                            ->orWhere('customer_name', 'LIKE', "%$keyword%")
+                            ->orWhere('date', 'LIKE', "%$keyword%")
+                            ->orWhere('time', 'LIKE', "%$keyword%") 
+                            ->where('user_id', Auth::id())
+                            ->latest()->paginate($perPage);
         } else {
-            $bookings = booking::latest()->paginate($perPage);
+            $bookings = booking::latest()->with('bookedProfile')->where('user_id', Auth::id())->paginate($perPage);
         }
-
+       
         return view('admin.bookings.index', compact('bookings'));
     }
 
@@ -39,8 +39,7 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
-    {
+    public function create() {
         return view('admin.bookings.create');
     }
 
@@ -51,11 +50,10 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
-    {
-        
+    public function store(Request $request) {
+
         $requestData = $request->all();
-        
+
         booking::create($requestData);
 
         return redirect('admin/bookings')->with('flash_message', 'booking added!');
@@ -68,8 +66,7 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function show($id)
-    {
+    public function show($id) {
         $booking = booking::findOrFail($id);
 
         return view('admin.bookings.show', compact('booking'));
@@ -82,8 +79,7 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $booking = booking::findOrFail($id);
 
         return view('admin.bookings.edit', compact('booking'));
@@ -97,11 +93,10 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Request $request, $id)
-    {
-        
+    public function update(Request $request, $id) {
+
         $requestData = $request->all();
-        
+
         $booking = booking::findOrFail($id);
         $booking->update($requestData);
 
@@ -115,10 +110,10 @@ class bookingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         booking::destroy($id);
 
         return redirect('admin/bookings')->with('flash_message', 'booking deleted!');
     }
+
 }

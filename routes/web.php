@@ -37,15 +37,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     Route::resource('settings', 'Admin\SettingsController');
     Route::get('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@getGenerator']);
     Route::post('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@postGenerator']);
+
+
+
+    Route::resource('profiles', 'Admin\\profilesController');
+    Route::resource('availability', 'Admin\\availabilityController');
+    Route::resource('bookings', 'Admin\\bookingsController');
+
+
+
+    Route::resource('services', 'Admin\\ServicesController');
+    Route::resource('profile-services', 'Admin\\ProfileServicesController');
 });
-
-Route::resource('admin/profiles', 'Admin\\profilesController');
-Route::resource('admin/availability', 'Admin\\availabilityController');
-Route::resource('admin/bookings', 'Admin\\bookingsController');
-
-
 //Api Models
- Route::post('mainApi', 'ApiController@mainApi');
+Route::post('mainApi', 'ApiController@mainApi');
 
-Route::resource('admin/services', 'Admin\\ServicesController');
-Route::resource('admin/profile-services', 'Admin\\ProfileServicesController');

@@ -30,15 +30,17 @@
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>#</th><th>Name</th><th>User Id</th><th>Actions</th>
+                                        <th>#</th><th>Name</th><th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($profiles as $item)
                                     <tr>
                                         <td>{{ $loop->iteration or $item->id }}</td>
-                                        <td>{{ $item->name }}</td><td>{{ $item->user_id }}</td>
+                                        <td>{{ $item->name }}</td>
                                         <td>
+                                            <a class="btn  btn-success btn-sm">Add/Edit Availability</a>
+                                            <a href = " {{ url('admin/profile-services/create?profile='.$item->id.'') }}" class="btn  btn-primary btn-sm">Add/Edit Services</a>
                                             <a href="{{ url('/admin/profiles/' . $item->id) }}" title="View profile"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
                                             <a href="{{ url('/admin/profiles/' . $item->id . '/edit') }}" title="Edit profile"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
                                             {!! Form::open([

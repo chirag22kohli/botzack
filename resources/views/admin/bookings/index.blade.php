@@ -1,69 +1,109 @@
 @extends('layouts.backend')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            @include('admin.sidebar')
+<div class="container">
+    <div class="row">
+        @include('admin.sidebar')
 
-            <div class="col-md-9">
-                <div class="card">
-                    <div class="card-header">Bookings</div>
-                    <div class="card-body">
-                        <a href="{{ url('/admin/bookings/create') }}" class="btn btn-success btn-sm" title="Add New booking">
-                            <i class="fa fa-plus" aria-hidden="true"></i> Add New
-                        </a>
-
-                        {!! Form::open(['method' => 'GET', 'url' => '/admin/bookings', 'class' => 'form-inline my-2 my-lg-0 float-right', 'role' => 'search'])  !!}
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}">
-                            <span class="input-group-append">
-                                <button class="btn btn-secondary" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        {!! Form::close() !!}
-
-                        <br/>
-                        <br/>
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>#</th><th>User Id</th><th>Profile Id</th><th>Customer Name</th><th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($bookings as $item)
-                                    <tr>
-                                        <td>{{ $loop->iteration or $item->id }}</td>
-                                        <td>{{ $item->user_id }}</td><td>{{ $item->profile_id }}</td><td>{{ $item->customer_name }}</td>
-                                        <td>
-                                            <a href="{{ url('/admin/bookings/' . $item->id) }}" title="View booking"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
-                                            <a href="{{ url('/admin/bookings/' . $item->id . '/edit') }}" title="Edit booking"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
-                                            {!! Form::open([
-                                                'method' => 'DELETE',
-                                                'url' => ['/admin/bookings', $item->id],
-                                                'style' => 'display:inline'
-                                            ]) !!}
-                                                {!! Form::button('<i class="fa fa-trash-o" aria-hidden="true"></i>', array(
-                                                        'type' => 'submit',
-                                                        'class' => 'btn btn-danger btn-sm',
-                                                        'title' => 'Delete booking',
-                                                        'onclick'=>'return confirm("Confirm delete?")'
-                                                )) !!}
-                                            {!! Form::close() !!}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                            <div class="pagination-wrapper"> {!! $bookings->appends(['search' => Request::get('search')])->render() !!} </div>
-                        </div>
-
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">Bookings</div>
+                <div class="card-body">
+                    <a href="{{ url('/admin/bookings/create') }}" class="btn btn-success btn-sm" title="Add New booking">
+                        <i class="fa fa-plus" aria-hidden="true"></i> Add New
+                    </a>
+                    <div id = "calendar"></div>
+                     <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
+                    {!! Form::open(['method' => 'GET', 'url' => '/admin/bookings', 'class' => 'form-inline my-2 my-lg-0 float-right', 'role' => 'search'])  !!}
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}">
+                        <span class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
                     </div>
+                    {!! Form::close() !!}
+
+                    <br/>
+                    <br/>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>#</th><th>Profile </th><th>Customer Name</th><th>Time</th><th>Date</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($bookings as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration or $item->id }}</td>
+                                    <td>{{ $item->bookedProfile->name }}</td>
+                                    <td>{{ $item->customer_name }}</td>
+                                    <td>{{ $item->time }}</td>
+                                    <td>{{ $item->date }}</td>
+                                    <td>
+                                        <a href="{{ url('/admin/bookings/' . $item->id) }}" title="View booking"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
+                                        <a href="{{ url('/admin/bookings/' . $item->id . '/edit') }}" title="Edit booking"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
+                                        {!! Form::open([
+                                        'method' => 'DELETE',
+                                        'url' => ['/admin/bookings', $item->id],
+                                        'style' => 'display:inline'
+                                        ]) !!}
+                                        {!! Form::button('<i class="fa fa-trash-o" aria-hidden="true"></i>', array(
+                                        'type' => 'submit',
+                                        'class' => 'btn btn-danger btn-sm',
+                                        'title' => 'Delete booking',
+                                        'onclick'=>'return confirm("Confirm delete?")'
+                                        )) !!}
+                                        {!! Form::close() !!}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="pagination-wrapper"> {!! $bookings->appends(['search' => Request::get('search')])->render() !!} </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+    // page is now ready, initialize the calendar...
+    $('#calendar').fullCalendar({
+    // put your options and callbacks here
+    events : [
+            @foreach($bookings as $task)
+    {
+
+    title : '{{ $task->customer_name }}',
+            start : '{{ gmdate("Y-m-d H:i:s e", strtotime("$task->date $task->time "))}}',
+            allDay: false,
+    },
+            @endforeach
+    ],
+            eventMouseover: function(calEvent, jsEvent) {
+    var tooltip = '<div class="tooltipevent" style="width:100px;height:100px;background:#ccc;position:absolute;z-index:10001;">' + calEvent.title + '</div>';
+    $("body").append(tooltip);
+    $(this).mouseover(function(e) {
+        $(this).css('z-index', 10000);
+        $('.tooltipevent').fadeIn('500');
+        $('.tooltipevent').fadeTo('10', 1.9);
+    }).mousemove(function(e) {
+        $('.tooltipevent').css('top', e.pageY + 10);
+        $('.tooltipevent').css('left', e.pageX + 20);
+    });
+},
+
+eventMouseout: function(calEvent, jsEvent) {
+     $(this).css('z-index', 8);
+     $('.tooltipevent').remove();
+},
+    })
+    });
+</script>
 @endsection

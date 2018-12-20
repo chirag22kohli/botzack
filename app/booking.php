@@ -5,10 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class booking extends Model
-{
+class booking extends Model {
+
     use LogsActivity;
-    
 
     /**
      * The database table used by the model.
@@ -18,10 +17,10 @@ class booking extends Model
     protected $table = 'bookings';
 
     /**
-    * The database primary key value.
-    *
-    * @var string
-    */
+     * The database primary key value.
+     *
+     * @var string
+     */
     protected $primaryKey = 'id';
 
     /**
@@ -31,8 +30,6 @@ class booking extends Model
      */
     protected $fillable = ['user_id', 'profile_id', 'customer_name', 'date', 'time'];
 
-    
-
     /**
      * Change activity log event description
      *
@@ -40,8 +37,12 @@ class booking extends Model
      *
      * @return string
      */
-    public function getDescriptionForEvent($eventName)
-    {
+    public function getDescriptionForEvent($eventName) {
         return __CLASS__ . " model has been {$eventName}";
     }
+
+    public function bookedProfile() {
+        return $this->hasOne(\App\profile::class, 'id', 'profile_id');
+    }
+
 }

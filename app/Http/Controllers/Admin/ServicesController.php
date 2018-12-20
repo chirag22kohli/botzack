@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Service;
 use Illuminate\Http\Request;
+use Auth;
 
 class ServicesController extends Controller {
 
@@ -21,9 +22,10 @@ class ServicesController extends Controller {
         if (!empty($keyword)) {
             $services = Service::where('name', 'LIKE', "%$keyword%")
                             ->orWhere('user_id', 'LIKE', "%$keyword%")
+                            ->where('user_id', Auth::id())
                             ->latest()->paginate($perPage);
         } else {
-            $services = Service::latest()->paginate($perPage);
+            $services = Service::latest()->where('user_id', Auth::id())->paginate($perPage);
         }
 
         return view('admin.services.index', compact('services'));
@@ -48,7 +50,7 @@ class ServicesController extends Controller {
     public function store(Request $request) {
 
         $requestData = $request->all();
-
+        $requestData['user_id'] = Auth::id();
         Service::create($requestData);
 
 
@@ -102,7 +104,7 @@ class ServicesController extends Controller {
     public function update(Request $request, $id) {
 
         $requestData = $request->all();
-
+        $requestData['user_id'] = Auth::id();
         $service = Service::findOrFail($id);
         $service->update($requestData);
 

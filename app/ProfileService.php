@@ -5,10 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class ProfileService extends Model
-{
+class ProfileService extends Model {
+
     use LogsActivity;
-    
 
     /**
      * The database table used by the model.
@@ -18,10 +17,10 @@ class ProfileService extends Model
     protected $table = 'profile_services';
 
     /**
-    * The database primary key value.
-    *
-    * @var string
-    */
+     * The database primary key value.
+     *
+     * @var string
+     */
     protected $primaryKey = 'id';
 
     /**
@@ -31,8 +30,6 @@ class ProfileService extends Model
      */
     protected $fillable = ['profile_id', 'service_id', 'user_id'];
 
-    
-
     /**
      * Change activity log event description
      *
@@ -40,8 +37,12 @@ class ProfileService extends Model
      *
      * @return string
      */
-    public function getDescriptionForEvent($eventName)
-    {
+    public function getDescriptionForEvent($eventName) {
         return __CLASS__ . " model has been {$eventName}";
     }
+
+    public function serviceName() {
+        return $this->hasOne(\App\Service::class, 'id', 'service_id');
+    }
+
 }
